@@ -53,7 +53,7 @@ public class Client implements Runnable
         {
             try
             {
-                if(bufferedReader.availble <= 0)
+                if(!bufferedReader.ready())
                     return;
                 while((inMessage = bufferedReader.readLine()) != null)
                 {

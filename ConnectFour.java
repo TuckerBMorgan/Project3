@@ -7,7 +7,9 @@ public class ConnectFour
     
     public int awayNumber;
     public String awayName;
-    
+    public Client client;
+    public boolean isYourTurn;
+    C4UI c4ui;
     public static void main(String args[])
     {
         String host = args[0];
@@ -23,8 +25,10 @@ public class ConnectFour
         {
             System.err.print("DIE\n");
         }
+        client = cli;
         C4Board c4Board = new C4Board();
         C4UI iu = new C4UI(c4Board, playername);
+        c4ui = iu;
         cli.SendMessage("join " + playername);
         (new Thread(cli)).start();
     }
@@ -43,11 +47,20 @@ public class ConnectFour
             int holdInt = Integer.parseInt(parts[1]);
             if(holdInt == 1)
             {
-                localNumber = 1;
+                localNumber = holdInt;
             }
             else
             {
                 awayNumber = holdInt;
+            }
+            
+            if(holdInt == 1)
+            {
+                isYourTurn = true;   
+            }
+            else
+            {
+                isYourTurn = false;
             }
         }
         else if(parts[0] == "new")
@@ -64,7 +77,7 @@ public class ConnectFour
         }
         else if(parts[0] == "turn")
         {
-            
+            c4ui.OnTurnChange(!isYourTurn);   
         }
         else if(parts[0] == "add")
         {
@@ -74,5 +87,16 @@ public class ConnectFour
         {
             
         }
+    }
+    
+    public void ReportMove(int col)
+    {
+        String message = "add " + localNumber + " " + col + "\n";
+        client.SendMessage(message); 
+    }
+    
+    public void ClearGame()
+    {
+        client.SendMessage("clear");
     }
 }

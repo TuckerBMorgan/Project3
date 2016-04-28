@@ -28,6 +28,9 @@ public class C4UI
 	private C4Panel boardPanel;
 	private JTextField message;
 	private JButton newGameButton;
+	private String localName;
+	private String awayName;
+	private ConnectFour c4;
 
 // Exported constructors.
 
@@ -37,10 +40,10 @@ public class C4UI
 	 * @param  board  Connect Four board.
 	 * @param  name   Player's name.
 	 */
-	public C4UI(C4BoardIntf board,String name)
+	public C4UI(C4BoardIntf board,String name, ConnectFour c4)
 	{
 		c4board = board;
-
+		this.c4 = c4;
 		// Set up window.
 		frame = new JFrame ("Connect Four -- " + name);
 		Container pane = frame.getContentPane();
@@ -71,22 +74,21 @@ public class C4UI
 
 		// Clicking the Connect Four panel informs the view listener.
 		boardPanel.addMouseListener (new MouseAdapter()
-			{
+		{
 			public void mouseClicked (MouseEvent e)
-				{
+			{
 				int c = boardPanel.clickToColumn (e);
-				System.out.print(c);
-				}
-			});
+			}
+		});
 
 		// Clicking the New Game button informs the view listener.
 		newGameButton.addActionListener (new ActionListener()
-			{
+		{
 			public void actionPerformed (ActionEvent e)
-				{
-				// TBD
-				}
-			});
+			{
+				c4.ClearGame();
+			}
+		});
 
 		// Closing the window exits the client.
 		frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
@@ -96,9 +98,20 @@ public class C4UI
 		frame.setVisible (true);
 	}
 	
-	public void StartGame(String awayName)
+	public void StartGame(String homeName, String awayName)
 	{
+		this.homeName = homeName;
+		this.awayName = awayName;
+	}
+	
+	public void OnTurnChange(boolean isYourTurn)
+	{
+		if(isYourTurn)
+		{
+			message.setText("Your turn");
+		}
 		
+		message.setText(awayName + "'s turn");
 	}
 
 }
